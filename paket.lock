@@ -1,6 +1,7 @@
 FRAMEWORK: NET45
 NUGET
   remote: https://www.nuget.org/api/v2
+    ExtCore (0.8.45)
     FAKE (4.37.2)
     FParsec (1.0.2)
     FSharp.Compiler.Service (8.0) - framework: >= net45
@@ -37,5 +38,5 @@ NUGET
       System.Collections.Immutable (>= 1.2)
 GITHUB
   remote: fsharp/FAKE
-    modules/Octokit/Octokit.fsx (889bda9367dfb24f9abb524165a0dbe2cdd86252)
+    modules/Octokit/Octokit.fsx (4e4428bfe931a5f720e32f9d69289d25eb16d467)
       Octokit (>= 0.20)
