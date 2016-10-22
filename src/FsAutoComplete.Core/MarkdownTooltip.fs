@@ -133,12 +133,21 @@ module TooltipsXml =
                        | null -> ()
                        | cref -> 
                            let exceptionType = 
-                               cref.Value |> (strip "T:"
-                                              >> unqualifyName
-                                              >> Style.Exception
-                                              >> style)
+                               cref.Value |> (strip "T:" >> unqualifyName >> Style.Exception >> style)
+                           
                            if i > 0 then summary.AppendLine() |> ignore
-                           summary.AppendFormat("{0}: {1}", exceptionType, element.Value) |> ignore)
+                           
+                           let paramRefs =
+                             element
+                             |> descendants (xn "paramref") 
+                             |> Seq.choose (
+                                  attribute "name" 
+                                  >> Option.ofNull
+                                  >> Option.map (fun x -> x.Value)
+                                )
+                             |> String.concat " "
+                           
+                           summary.AppendFormat("{0}: {1}", exceptionType, paramRefs + " " + element.Value) |> ignore)
                 summary.ToString().TrimEnd()
         //if the summary cannot be parsed just escape the text
         with _ -> GLib.Markup.EscapeText str
