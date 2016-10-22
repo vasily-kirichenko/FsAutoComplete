@@ -1,3 +1,4 @@
 FSharpLint.Core
 FSharp.Compiler.Service.ProjectCracker
 ExtCore
+ICSharpCode.NRefactory

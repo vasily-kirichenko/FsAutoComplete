@@ -13,6 +13,8 @@ NUGET
       FParsec (>= 1.0.2)
       FSharp.Compiler.Service (>= 6.0)
       FSharp.Compiler.Service.ProjectCracker (>= 6.0)
+    ICSharpCode.NRefactory (5.5.1)
+      Mono.Cecil (>= 0.9.5.4)
     Mono.Cecil (0.9.6.4)
     NDesk.Options (0.2.1)
     Newtonsoft.Json (9.0.1)

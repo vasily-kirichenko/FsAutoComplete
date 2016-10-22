@@ -310,7 +310,7 @@ module CommandResponse =
      serialize { Kind = "declarations"; Data = decls' }
 
   let toolTip (serialize : Serializer) (tip) =
-    let data = TipFormatter.formatTip tip |> List.map(List.map(fun (n,m) -> {Signature = n; Comment = m} ))
+    let data = TooltipFormatting.formatTip tip |> List.map (fun (n, m) -> { Signature = n; Comment = m })
     serialize { Kind = "tooltip"; Data = data }
 
   let typeSig (serialize : Serializer) (tip) =

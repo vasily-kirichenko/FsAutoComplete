@@ -73,10 +73,10 @@
     <Compile Include="Parser.fs" />
     <Compile Include="ProjectCoreCracker.fs" />
     <Compile Include="CompilerServiceInterface.fs" />
+    <Compile Include="MarkdownTooltip.fs" />
     <Compile Include="CommandResponse.fs" />
     <Compile Include="Project.fs" />
     <Compile Include="State.fs" />
-    <Compile Include="MarkdownTooltip.fs" />
     <Compile Include="Commands.fs" />
     <None Include="paket.references" />
   </ItemGroup>
@@ -150,6 +150,58 @@
       <ItemGroup>
         <Reference Include="FSharpLint.Core">
           <HintPath>..\..\packages\FSharpLint.Core\lib\net45\FSharpLint.Core.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.5'">
+      <ItemGroup>
+        <Reference Include="ICSharpCode.NRefactory.CSharp">
+          <HintPath>..\..\packages\ICSharpCode.NRefactory\lib\Net40\ICSharpCode.NRefactory.CSharp.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+        <Reference Include="ICSharpCode.NRefactory.Cecil">
+          <HintPath>..\..\packages\ICSharpCode.NRefactory\lib\Net40\ICSharpCode.NRefactory.Cecil.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+        <Reference Include="ICSharpCode.NRefactory.Xml">
+          <HintPath>..\..\packages\ICSharpCode.NRefactory\lib\Net40\ICSharpCode.NRefactory.Xml.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+        <Reference Include="ICSharpCode.NRefactory">
+          <HintPath>..\..\packages\ICSharpCode.NRefactory\lib\Net40\ICSharpCode.NRefactory.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.5'">
+      <ItemGroup>
+        <Reference Include="Mono.Cecil.Mdb">
+          <HintPath>..\..\packages\Mono.Cecil\lib\net45\Mono.Cecil.Mdb.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+        <Reference Include="Mono.Cecil.Pdb">
+          <HintPath>..\..\packages\Mono.Cecil\lib\net45\Mono.Cecil.Pdb.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+        <Reference Include="Mono.Cecil.Rocks">
+          <HintPath>..\..\packages\Mono.Cecil\lib\net45\Mono.Cecil.Rocks.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+        <Reference Include="Mono.Cecil">
+          <HintPath>..\..\packages\Mono.Cecil\lib\net45\Mono.Cecil.dll</HintPath>
           <Private>True</Private>
           <Paket>True</Paket>
         </Reference>

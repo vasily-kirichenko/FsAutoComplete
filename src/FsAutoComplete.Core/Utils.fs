@@ -7,6 +7,11 @@ type Result<'a> =
   | Success of 'a
   | Failure of string
 
+module Result =
+    let map f = function
+        | Success x -> Success (f x)
+        | Failure e -> Failure e
+
 type Pos = 
     { Line: int
       Col: int }
