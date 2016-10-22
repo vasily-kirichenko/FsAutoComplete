@@ -5,7 +5,6 @@ open System.IO
 open System.Text
 open System.Collections.Generic
 open System.Linq
-open System.Xml
 open ExtCore.Control
 open System.Xml.Linq
 
@@ -17,12 +16,15 @@ type Style =
     | Exception of string
 
 module Styles = 
-    let simpleMarkup style = 
+    open Microsoft.FSharp.Core.Printf
+
+    let simpleMarkup style =
+        let format fmt (name: string) = kprintf id fmt (name.Replace("`", "'"))
         match style with
-        | Style.Type name -> String.Format("`{0}` ", name)
-        | Style.Parameter name -> String.Format("`{0}` ", name)
-        | Style.Code name -> String.Format("```{0}``` ", name)
-        | Style.Exception name -> String.Format("\n`{0}`", name)
+        | Style.Type name -> format "`%s` " name
+        | Style.Parameter name -> format "`%s` " name
+        | Style.Code name -> format "```%s``` " name
+        | Style.Exception name -> format "\n`%s`" name
 
 module GLib = 
     module Markup =

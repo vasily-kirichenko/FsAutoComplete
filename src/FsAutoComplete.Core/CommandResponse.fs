@@ -93,13 +93,6 @@ module CommandResponse =
       Comment: string
     }
 
-  type Tooltip =
-    {
-      Signature: string
-      Comment: string
-      Parameter: string
-    }
-
   type OverloadParameter =
     {
       Name : string
@@ -321,12 +314,8 @@ module CommandResponse =
         })
      serialize { Kind = "declarations"; Data = decls' }
 
-  let toolTip (serialize : Serializer) (tooltip: TooltipInformation) =
-    let data: Tooltip = 
-        { Signature = tooltip.Signature
-          Comment = tooltip.Summary
-          Parameter = tooltip.Parameter }
-
+  let toolTip (serialize : Serializer) (info: TooltipInformation) =
+    let data = { Signature = info.Signature; Comment = info.Summary }
     serialize { Kind = "tooltip"; Data = data }
 
   let typeSig (serialize : Serializer) (tip) =

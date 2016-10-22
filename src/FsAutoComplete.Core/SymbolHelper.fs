@@ -812,7 +812,6 @@ module SymbolTooltips =
                 summaryAndparameterInfo |> Option.getOrElseFun (fun () -> "", "")
             | EmptyDoc -> "", ""
         
-        let summary = summary.Replace("`", "")
         let toolTipInfo = { Signature = signature; Summary = summary; Parameter = "" }
         
         if not (String.isNullOrEmpty parameterInfo) then
