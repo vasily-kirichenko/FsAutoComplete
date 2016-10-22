@@ -93,6 +93,13 @@ module CommandResponse =
       Comment: string
     }
 
+  type Tooltip =
+    {
+      Signature: string
+      Comment: string
+      Parameter: string
+    }
+
   type OverloadParameter =
     {
       Name : string
@@ -216,7 +223,10 @@ module CommandResponse =
   let error (serialize : Serializer) (s: string) = serialize { Kind = "error"; Data = s }
 
   let helpText (serialize : Serializer) (name: string, tip: FSharpToolTipText) =
-    let data = TipFormatter.formatTip tip |> List.map(List.map(fun (n,m) -> {Signature = n; Comment = m} ))
+    let data = 
+        TipFormatter.formatTip tip 
+        |> List.map (List.map (fun (n, m) -> { OverloadDescription.Signature = n; Comment = m }))
+
     serialize { Kind = "helptext"; Data = { HelpTextResponse.Name = name; Overloads = data } }
 
   let project (serialize : Serializer) (projectFileName, projectFiles, outFileOpt, references, logMap) =
@@ -271,7 +281,9 @@ module CommandResponse =
                              CurrentParameter = commas
                              Overloads =
                               [ for o in meth.Methods do
-                                 let tip = TipFormatter.formatTip o.Description |> List.map(List.map(fun (n,m) -> {Signature = n; Comment = m} ))
+                                 let tip = 
+                                    TipFormatter.formatTip o.Description 
+                                    |> List.map (List.map (fun (n, m) -> { OverloadDescription.Signature = n; Comment = m }))
                                  yield {
                                    Tip = tip
                                    TypeText = o.TypeText
@@ -309,8 +321,12 @@ module CommandResponse =
         })
      serialize { Kind = "declarations"; Data = decls' }
 
-  let toolTip (serialize : Serializer) (tip) =
-    let data = TooltipFormatting.formatTip tip |> List.map (fun (n, m) -> { Signature = n; Comment = m })
+  let toolTip (serialize : Serializer) (tooltip: TooltipInformation) =
+    let data: Tooltip = 
+        { Signature = tooltip.Signature
+          Comment = tooltip.Summary
+          Parameter = tooltip.Parameter }
+
     serialize { Kind = "tooltip"; Data = data }
 
   let typeSig (serialize : Serializer) (tip) =

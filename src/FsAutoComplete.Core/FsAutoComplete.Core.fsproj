@@ -74,6 +74,8 @@
     <Compile Include="ProjectCoreCracker.fs" />
     <Compile Include="CompilerServiceInterface.fs" />
     <Compile Include="MarkdownTooltip.fs" />
+    <Compile Include="KeywordList.fs" />
+    <Compile Include="SymbolHelper.fs" />
     <Compile Include="CommandResponse.fs" />
     <Compile Include="Project.fs" />
     <Compile Include="State.fs" />

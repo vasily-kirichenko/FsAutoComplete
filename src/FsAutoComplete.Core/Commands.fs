@@ -141,7 +141,15 @@ type Commands (serialize : Serializer) =
     }
 
     member x.ToolTip (tyRes : ParseAndCheckResults) (pos: Pos) lineStr =
-        tyRes.TryGetToolTip pos lineStr |> x.SerializeResult Response.toolTip
+        async {
+            let! res = tyRes.TryGetSymbolUse pos lineStr
+            match res with
+            | Success (su, _) -> 
+                return! SymbolTooltips.getTooltipInformation su |> Async.map Success
+            | Failure e -> 
+                return Failure e
+        }
+        |> x.SerializeResult Response.toolTip
 
     member x.Typesig (tyRes : ParseAndCheckResults) (pos: Pos) lineStr =
         tyRes.TryGetToolTip pos lineStr |> x.SerializeResult Response.typeSig
