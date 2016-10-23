@@ -119,7 +119,8 @@ type FSharpCompilerServiceChecker() =
     FSharpChecker.Create(
       projectCacheSize = 200,
       keepAllBackgroundResolutions = true,
-      keepAssemblyContents = true)
+      keepAssemblyContents = true,
+      ImplicitlyStartBackgroundWork = true)
 
   let files = ConcurrentDictionary<string, Version * FileState>()
   do checker.BeforeBackgroundFileCheck.Add ignore
@@ -193,13 +194,18 @@ type FSharpCompilerServiceChecker() =
   member __.GetUsesOfSymbol (options : (SourceFilePath * FSharpProjectOptions) seq, symbol) = async {
     let! res =
       options
-      |> Seq.distinctBy(fun (_, v) -> v.ProjectFileName)
-      |> Seq.map (fun (_, opts) -> async {
-           let! res = checker.ParseAndCheckProject opts
-           return! res.GetUsesOfSymbol symbol
+      |> Seq.distinctBy (fun (_, v) -> v.ProjectFileName)
+      |> Seq.toArray
+      |> Async.Array.map (fun (_, opts) -> 
+           async {
+             try
+                let! res = checker.ParseAndCheckProject opts
+                let! uses = res.GetUsesOfSymbol symbol
+                return uses
+             with _ -> return [||]
          })
-      |> Async.Parallel
-    return res |> Array.collect id
+    
+    return res |> Array.concat
   }
 
   member __.GetProjectOptionsFromScript(file, source) = async {
@@ -292,20 +298,19 @@ type FSharpCompilerServiceChecker() =
       Failure (sprintf "File '%s' does not exist" file)
     else
       try
-        let po, logMap =
+        let opts, logMap =
           let p, logMap = ProjectCracker.GetProjectOptionsFromProjectFileLogged(file, enableLogging=verbose)
           let opts =
-            if not (Seq.exists (fun (s: string) -> s.Contains "FSharp.Core.dll") p.OtherOptions) then
+            if not (p.OtherOptions |> Seq.exists (fun s -> s.Contains "FSharp.Core.dll")) then
               ensureCorrectFSharpCore p.OtherOptions
             else
                p.OtherOptions
           { p with OtherOptions = opts }, logMap
 
-        let compileFiles = Seq.filter (fun (s:string) -> s.EndsWith(".fs")) po.OtherOptions
-        let outputFile = Seq.tryPick (chooseByPrefix "--out:") po.OtherOptions
-        let references = Seq.choose (chooseByPrefix "-r:") po.OtherOptions
+        let outputFile = Seq.tryPick (chooseByPrefix "--out:") opts.OtherOptions
+        let references = Seq.choose (chooseByPrefix "-r:") opts.OtherOptions
 
-        Success (po, Seq.toList compileFiles, outputFile, Seq.toList references, logMap)
+        Success (opts, Array.toList opts.ProjectFileNames, outputFile, Seq.toList references, logMap)
       with e ->
         Failure e.Message
 

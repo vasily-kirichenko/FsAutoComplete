@@ -67,6 +67,53 @@ module Async =
             return! binding x
         }
 
+    [<RequireQualifiedAccess>]    
+    module Array =
+        /// Async implementation of Array.map.
+        let map (mapping : 'T -> Async<'U>) (array : 'T[]) : Async<'U[]> =
+            let len = Array.length array
+            let result = Array.zeroCreate len
+
+            async { // Apply the mapping function to each array element.
+                for i in 0 .. len - 1 do
+                    let! mappedValue = mapping array.[i]
+                    result.[i] <- mappedValue
+
+                // Return the completed results.
+                return result
+            }
+
+        /// Async implementation of Array.mapi.
+        let mapi (mapping : int -> 'T -> Async<'U>) (array : 'T[]) : Async<'U[]> =
+            let len = Array.length array
+            let result = Array.zeroCreate len
+
+            async {
+                // Apply the mapping function to each array element.
+                for i in 0 .. len - 1 do
+                    let! mappedValue = mapping i array.[i]
+                    result.[i] <- mappedValue
+
+                // Return the completed results.
+                return result
+            }
+
+        /// Async implementation of Array.exists.
+        let exists (predicate : 'T -> Async<bool>) (array : 'T[]) : Async<bool> =
+            let len = Array.length array
+            let rec loop i =
+                async {
+                    if i >= len then
+                        return false
+                    else
+                        let! found = predicate array.[i]
+                        if found then
+                            return true
+                        else
+                            return! loop (i + 1)
+                }
+            loop 0
+
 module List =
     let inline singleton x = [x]
 
